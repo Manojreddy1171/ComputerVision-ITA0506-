@@ -1,0 +1,411 @@
+/* ============================================================
+   Intelligent Retail Shelf Monitoring — Modern SaaS Stylesheet
+   ============================================================
+   Palette:
+     Primary:    #4F46E5 (Indigo-600)
+     Secondary:  #6366F1 (Indigo-500)
+     Dark:       #111827 (Slate-900)
+     Muted:      #6B7280 (Gray-500)
+     Background: #F8FAFC (Slate-50)
+     Surface:    #FFFFFF
+     Border:     #E5E7EB (Gray-200)
+     Available:  #10B981 (Emerald-500)
+     Low Stock:  #F59E0B (Amber-500)
+     Out Stock:  #EF4444 (Red-500)
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary: #4F46E5;
+    --primary-light: #6366F1;
+    --primary-dark: #3730A3;
+    --dark: #111827;
+    --muted: #6B7280;
+    --bg: #F8FAFC;
+    --surface: #FFFFFF;
+    --border: #E5E7EB;
+    --available: #10B981;
+    --low-stock: #F59E0B;
+    --out-stock: #EF4444;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(79, 70, 229, 0.08), 0 4px 6px -4px rgba(79, 70, 229, 0.04);
+}
+
+/* ── Global Layout Container ────────────────────────────────── */
+.block-container {
+    max-width: 1280px !important;
+    padding-top: 1.8rem !important;
+    padding-bottom: 4rem !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+}
+
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif !important;
+    background-color: var(--bg) !important;
+    color: var(--dark) !important;
+}
+
+h1, h2, h3, h4, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 700 !important;
+    color: var(--dark) !important;
+    letter-spacing: -0.02em !important;
+}
+
+/* ── Hide Streamlit Chrome & Native Multi-page Nav ──────────── */
+#MainMenu { visibility: hidden; }
+footer { visibility: hidden; }
+header { visibility: hidden; }
+[data-testid="stSidebarNav"] { display: none !important; }
+
+/* ── Sidebar Redesign (Clean, Compact, Minimal) ─────────────── */
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #0F172A 0%, #1E1B4B 100%) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.12) !important;
+    padding: 1.2rem 1rem !important;
+}
+
+[data-testid="stSidebar"] * {
+    color: #E2E8F0 !important;
+}
+
+[data-testid="stSidebar"] .stRadio label {
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 500 !important;
+    font-size: 0.92rem !important;
+    padding: 8px 12px !important;
+    border-radius: var(--radius-sm) !important;
+    transition: all 0.2s ease !important;
+}
+
+[data-testid="stSidebar"] .stRadio label:hover {
+    background: rgba(255, 255, 255, 0.06) !important;
+    color: #FFFFFF !important;
+}
+
+[data-testid="stSidebar"] hr {
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    margin: 14px 0 !important;
+}
+
+/* ── Sidebar Mode Badges ───────────────────────────────────── */
+.sidebar-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 99px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.sidebar-badge-custom {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34D399 !important;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.sidebar-badge-demo {
+    background: rgba(245, 158, 11, 0.15);
+    color: #FBBF24 !important;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+/* ── Buttons (44-48px height, rounded, accessible) ──────────── */
+.stButton > button {
+    min-height: 44px !important;
+    border-radius: 10px !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 0.92rem !important;
+    padding: 0.55rem 1.4rem !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border: 1px solid transparent !important;
+}
+
+.stButton > button[kind="primary"] {
+    background: var(--primary) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25) !important;
+}
+
+.stButton > button[kind="primary"]:hover {
+    background: var(--primary-dark) !important;
+    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35) !important;
+    transform: translateY(-1px) !important;
+}
+
+.stButton > button[kind="secondary"] {
+    background: var(--surface) !important;
+    color: var(--dark) !important;
+    border: 1px solid var(--border) !important;
+}
+
+.stButton > button[kind="secondary"]:hover {
+    background: #F1F5F9 !important;
+    border-color: #CBD5E1 !important;
+    color: var(--primary) !important;
+}
+
+/* ── Hero Container ────────────────────────────────────────── */
+.hero-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 38px 40px;
+    margin-bottom: 32px;
+}
+
+.hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #EEF2FF;
+    color: var(--primary);
+    padding: 4px 12px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+.hero-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.35rem;
+    font-weight: 800;
+    color: var(--dark);
+    line-height: 1.18;
+    margin: 0 0 12px 0;
+}
+
+.hero-sub {
+    font-size: 1.02rem;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 620px;
+    margin-bottom: 22px;
+}
+
+.hero-side-card {
+    background: #F8FAFC;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 22px;
+}
+
+/* ── KPI Cards ─────────────────────────────────────────────── */
+.kpi-card-saas {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 18px 16px;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kpi-card-saas:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.kpi-label-saas {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+}
+
+.kpi-val-saas {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.1rem;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+/* ── Module Cards (How it Works) ───────────────────────────── */
+.module-grid-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 22px 20px;
+    box-shadow: var(--shadow-sm);
+    height: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.module-grid-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: #CBD5E1;
+}
+
+.module-num-tag {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+.module-card-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--dark);
+    margin: 4px 0 6px 0;
+}
+
+.module-card-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* ── Visual Process Workflow ───────────────────────────────── */
+.workflow-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    box-shadow: var(--shadow-sm);
+    margin: 12px 0 28px 0;
+}
+
+.workflow-node {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.workflow-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: #EEF2FF;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.workflow-title {
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.workflow-arrow {
+    color: #94A3B8;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+/* ── Section Title Strip ───────────────────────────────────── */
+.section-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin: 20px 0 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-sub {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-top: -6px;
+    margin-bottom: 18px;
+}
+
+/* ── Status Badges ─────────────────────────────────────────── */
+.status-badge-saas {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.status-available {
+    background: #ECFDF5;
+    color: #047857;
+    border: 1px solid #A7F3D0;
+}
+
+.status-low {
+    background: #FFFBEB;
+    color: #B45309;
+    border: 1px solid #FDE68A;
+}
+
+.status-out {
+    background: #FEF2F2;
+    color: #B91C1C;
+    border: 1px solid #FECACA;
+}
+
+/* ── Product Condition Card (Clean subtle left border) ─────── */
+.product-condition-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 16px 18px;
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.product-condition-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.pcard-avail { border-left: 4px solid var(--available) !important; }
+.pcard-low   { border-left: 4px solid var(--low-stock) !important; }
+.pcard-out   { border-left: 4px solid var(--out-stock) !important; }
+
+/* ── Card Framing & Tables ─────────────────────────────────── */
+.clean-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.stDataFrame {
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-md) !important;
+    overflow: hidden !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+.stAlert {
+    border-radius: var(--radius-md) !important;
+    border-width: 1px !important;
+}

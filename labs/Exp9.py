@@ -1,0 +1,35 @@
+import cv2
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = ROOT.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from resources.display_utils import show_small
+from tkinter import Tk, filedialog
+
+Tk().withdraw()
+file_path = filedialog.askopenfilename(
+    title="Select an Image",
+    filetypes=[("Image Files", "*.jpg *.jpeg *.png *.bmp")]
+)
+
+if not file_path:
+    print("No image selected!")
+    exit()
+
+img = cv2.imread(file_path)
+if img is None:
+    print("Error: Unable to load image!")
+    exit()
+
+bigger = cv2.resize(img, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
+smaller = cv2.resize(img, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+
+show_small("Original Image", img)
+show_small("Bigger Image", bigger)
+show_small("Smaller Image", smaller)
+cv2.waitKey(0)
+cv2.destroyAllWindows()

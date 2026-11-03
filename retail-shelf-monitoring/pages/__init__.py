@@ -1,0 +1,1 @@
+"""pages/__init__.py – makes pages a Python package."""

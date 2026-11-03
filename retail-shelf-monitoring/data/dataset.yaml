@@ -1,0 +1,29 @@
+# ──────────────────────────────────────────────────────────────
+#  Dataset YAML configuration for YOLOv8 / YOLO11 training
+#  Intelligent Retail Shelf Monitoring System
+# ──────────────────────────────────────────────────────────────
+#
+#  Classes:
+#    0: Coke
+#    1: Pepsi
+#    2: Sprite
+#
+#  For local training (from project root):
+#    path: data
+#
+#  For Google Colab training:
+#    path: /content/dataset
+# ──────────────────────────────────────────────────────────────
+
+path  : data
+train : images/train
+val   : images/val
+test  : images/test
+
+nc    : 3
+
+names:
+  0: Coke
+  1: Pepsi
+  2: Sprite
+
