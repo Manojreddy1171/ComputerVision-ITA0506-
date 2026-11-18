@@ -41,8 +41,17 @@ PALETTE = [
 ]
 
 
-def get_color(class_id: int) -> tuple:
-    """Return a consistent BGR colour for the given class index."""
+BRAND_COLORS = {
+    "Coke": (34, 34, 220),    # Vibrant Red (BGR)
+    "Pepsi": (220, 110, 24),  # Royal Blue (BGR)
+    "Sprite": (40, 180, 48),  # Vibrant Green (BGR)
+}
+
+
+def get_color(class_id: int, class_name: str = "") -> tuple:
+    """Return a consistent BGR colour for the given class index or brand name."""
+    if class_name in BRAND_COLORS:
+        return BRAND_COLORS[class_name]
     return PALETTE[class_id % len(PALETTE)]
 
 
@@ -103,11 +112,71 @@ def get_expected_classes(model: YOLO) -> list[str]:
 
 
 
+# ─── NMS & Brand Recognition Refinement ───────────────────────
+
+def compute_iou(b1: tuple, b2: tuple) -> float:
+    """Compute Intersection-over-Union (IoU) between two bounding boxes (x1, y1, x2, y2)."""
+    x1, y1 = max(b1[0], b2[0]), max(b1[1], b2[1])
+    x2, y2 = min(b1[2], b2[2]), min(b1[3], b2[3])
+    inter = max(0, x2 - x1) * max(0, y2 - y1)
+    a1 = max(0, b1[2] - b1[0]) * max(0, b1[3] - b1[1])
+    a2 = max(0, b2[2] - b2[0]) * max(0, b2[3] - b2[1])
+    union = a1 + a2 - inter
+    return inter / union if union > 0 else 0.0
+
+
+def refine_brand_by_color(crop_bgr: np.ndarray, predicted_class: str, class_names: dict) -> tuple[int, str]:
+    """
+    Module 3: Product Recognition Refinement via Computer Vision Color Analysis.
+    Examines the chromatic profile of detected bottles/cans in HSV color space
+    to verify and refine brand classification (Coke=Red, Pepsi=Blue, Sprite=Green),
+    preventing classification bias and cross-class duplicate counts.
+    """
+    name_to_id = {v: k for k, v in class_names.items()} if isinstance(class_names, dict) else {}
+
+    if crop_bgr is None or crop_bgr.size == 0:
+        return name_to_id.get(predicted_class, 0), predicted_class
+
+    hsv = cv2.cvtColor(crop_bgr, cv2.COLOR_BGR2HSV)
+    h, s, v = hsv[:, :, 0], hsv[:, :, 1], hsv[:, :, 2]
+
+    # Focus on colorful saturated pixels (bottle body / label)
+    mask = (s > 40) & (v > 30) & (v < 250)
+    if np.sum(mask) < 20:
+        return name_to_id.get(predicted_class, 0), predicted_class
+
+    val_h = h[mask]
+    total_colored = len(val_h)
+
+    red_px   = np.sum((val_h <= 14) | (val_h >= 165))
+    green_px = np.sum((val_h >= 35) & (val_h <= 85))
+    blue_px  = np.sum((val_h >= 90) & (val_h <= 140))
+
+    r_ratio = red_px / total_colored
+    g_ratio = green_px / total_colored
+    b_ratio = blue_px / total_colored
+
+    # Check if a signature brand color is distinctly dominant
+    if b_ratio > 0.28 and b_ratio > r_ratio * 1.25 and b_ratio > g_ratio * 1.25:
+        target = "Pepsi"
+    elif g_ratio > 0.28 and g_ratio > r_ratio * 1.25 and g_ratio > b_ratio * 1.25:
+        target = "Sprite"
+    elif r_ratio > 0.28 and r_ratio > b_ratio * 1.25 and r_ratio > g_ratio * 1.25:
+        target = "Coke"
+    else:
+        target = predicted_class
+
+    return name_to_id.get(target, 0), target
+
+
 # ─── Inference ───────────────────────────────────────────────
 
 def run_detection(model: YOLO, img_bgr: np.ndarray, conf_threshold: float = 0.30) -> list[dict]:
     """
     Run YOLO inference on the BGR image.
+    Enforces class-agnostic NMS and post-processing IoU deduplication
+    to prevent duplicate detections on the same physical item.
+    Refines brand recognition using Computer Vision color analysis.
 
     Returns a list of detection dictionaries, each with:
         {
@@ -123,10 +192,12 @@ def run_detection(model: YOLO, img_bgr: np.ndarray, conf_threshold: float = 0.30
     results = model.predict(
         source=img_bgr,
         conf=conf_threshold,
+        iou=0.45,
+        agnostic_nms=True,
         verbose=False
     )
 
-    detections = []
+    raw_detections = []
     if results and len(results) > 0 and results[0].boxes is not None:
         boxes = results[0].boxes
         names = model.names  # dict {id: name}
@@ -135,12 +206,40 @@ def run_detection(model: YOLO, img_bgr: np.ndarray, conf_threshold: float = 0.30
             confidence = float(box.conf[0])
             coords = box.xyxy[0].tolist()
             x1, y1, x2, y2 = map(int, coords)
-            detections.append({
+            raw_detections.append({
                 "class_id"   : class_id,
                 "class_name" : names.get(class_id, f"Class {class_id}"),
                 "confidence" : round(confidence, 4),
                 "bbox"       : (x1, y1, x2, y2),
             })
+
+    # Sort descending by confidence
+    raw_detections.sort(key=lambda d: d["confidence"], reverse=True)
+
+    # Class-agnostic IoU deduplication: suppresses overlapping boxes on the same bottle
+    deduped = []
+    for det in raw_detections:
+        if any(compute_iou(det["bbox"], kept["bbox"]) > 0.40 for kept in deduped):
+            continue
+        deduped.append(det)
+
+    # Brand recognition refinement via Computer Vision color verification
+    detections = []
+    names = getattr(model, "names", {0: "Coke", 1: "Pepsi", 2: "Sprite"})
+    img_h, img_w = img_bgr.shape[:2]
+    for det in deduped:
+        x1, y1, x2, y2 = det["bbox"]
+        # Inset crop by 10% to analyze inner product body
+        pw = int((x2 - x1) * 0.10)
+        ph = int((y2 - y1) * 0.10)
+        cy1, cy2 = max(0, y1 + ph), min(img_h, y2 - ph)
+        cx1, cx2 = max(0, x1 + pw), min(img_w, x2 - pw)
+        crop = img_bgr[cy1:cy2, cx1:cx2]
+
+        cid, cname = refine_brand_by_color(crop, det["class_name"], names)
+        det["class_id"] = cid
+        det["class_name"] = cname
+        detections.append(det)
 
     return detections
 
@@ -160,8 +259,9 @@ def draw_detections(img_bgr: np.ndarray, detections: list[dict]) -> np.ndarray:
     for det in detections:
         x1, y1, x2, y2 = det["bbox"]
         cid = det["class_id"]
-        label = f"{det['class_name']} {det['confidence']*100:.0f}%"
-        color = get_color(cid)
+        cname = det["class_name"]
+        label = f"{cname} {det['confidence']*100:.0f}%"
+        color = get_color(cid, cname)
 
         # Bounding box
         cv2.rectangle(annotated, (x1, y1), (x2, y2), color, 2)
