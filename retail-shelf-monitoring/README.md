@@ -9,14 +9,13 @@
 
 ---
 
-## 🌐 Web Application
+## 🌐 Live Web Application
 
-The application runs locally with Streamlit. The previously listed public
-Streamlit URL is currently unavailable, so a working public deployment cannot
-be verified.
+The application is deployed live on **Streamlit Community Cloud**:
 
+* **Live Web App:** [https://fkxcsw3k4elilqq3rp6ds3.streamlit.app](https://fkxcsw3k4elilqq3rp6ds3.streamlit.app)
 * **GitHub Repository:** [Manojreddy1171/ComputerVision-ITA0506-](https://github.com/Manojreddy1171/ComputerVision-ITA0506-)
-* **Run locally:** Follow the Local Installation & Setup instructions below.
+* **Local Run:** Follow the Local Installation & Setup instructions below.
 
 ---
 
