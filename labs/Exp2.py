@@ -9,8 +9,9 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from resources.display_utils import show_small
 
-# Read the image
-img = cv2.imread("flower.jpg")
+input_path = PROJECT_ROOT / "images" / "flower.jpg"
+output_path = PROJECT_ROOT / "images" / "flower_blurred.jpg"
+img = cv2.imread(str(input_path))
 
 # Check whether the image is loaded
 if img is None:
@@ -26,10 +27,11 @@ else:
     show_small("Gaussian Blur Image", blur)
 
     # Save the blurred image
-    cv2.imwrite("flower.jpg", blur)
+    if not cv2.imwrite(str(output_path), blur):
+        raise OSError(f"Unable to save blurred image: {output_path}")
 
     print("Gaussian Blur applied successfully!")
-    print("Blurred image saved as flower.jpg")
+    print(f"Blurred image saved as {output_path}")
 
     # Wait until a key is pressed
     cv2.waitKey(0)

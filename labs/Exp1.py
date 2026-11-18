@@ -24,9 +24,12 @@ else:
     show_small("Gray Image", gray)
 
     # Save grayscale image
-    cv2.imwrite("gray_flower.jpg", gray)
+    output_path = PROJECT_ROOT / "images" / "gray_flower.jpg"
+    if not cv2.imwrite(str(output_path), gray):
+        raise OSError(f"Unable to save grayscale image: {output_path}")
 
     print("Image converted successfully!")
+    print(f"Grayscale image saved as {output_path}")
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()

@@ -9,12 +9,14 @@
 
 ---
 
-## 🌐 Live Application Demo
+## 🌐 Web Application
 
-The web application is configured for deployment on **Streamlit Community Cloud**:
+The application runs locally with Streamlit. The previously listed public
+Streamlit URL is currently unavailable, so a working public deployment cannot
+be verified.
 
-* **Live Web App:** [https://intelligent-retail-shelf-monitoring.streamlit.app](https://intelligent-retail-shelf-monitoring.streamlit.app)
-* **GitHub Repository:** [https://github.com/<USERNAME>/intelligent-retail-shelf-monitoring](https://github.com/<USERNAME>/intelligent-retail-shelf-monitoring)
+* **GitHub Repository:** [Manojreddy1171/ComputerVision-ITA0506-](https://github.com/Manojreddy1171/ComputerVision-ITA0506-)
+* **Run locally:** Follow the Local Installation & Setup instructions below.
 
 ---
 
@@ -96,8 +98,9 @@ intelligent-retail-shelf-monitoring/
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/<USERNAME>/intelligent-retail-shelf-monitoring.git
-cd intelligent-retail-shelf-monitoring
+git clone https://github.com/Manojreddy1171/ComputerVision-ITA0506-.git
+cd ComputerVision-ITA0506-
+cd retail-shelf-monitoring
 ```
 
 ### 2. Create and activate a virtual environment
@@ -129,12 +132,12 @@ The application will launch automatically in your browser at `http://localhost:8
 This project is designed for **Streamlit Community Cloud** with `opencv-python-headless` and platform-agnostic `pathlib` references.
 
 ### Deployment Steps:
-1. Push this repository to GitHub as `intelligent-retail-shelf-monitoring`.
+1. Push the [ComputerVision-ITA0506- repository](https://github.com/Manojreddy1171/ComputerVision-ITA0506-) to GitHub.
 2. Navigate to [share.streamlit.io](https://share.streamlit.io) and log in with your GitHub account.
 3. Click **"New app"**.
-4. Select your repository: `<USERNAME>/intelligent-retail-shelf-monitoring`.
-5. Set **Branch:** `main` and **Main file path:** `app.py`.
-6. Set your custom subdomain URL (e.g. `intelligent-retail-shelf-monitoring`).
+4. Select repository `Manojreddy1171/ComputerVision-ITA0506-`.
+5. Set **Branch:** `main` and **Main file path:** `retail-shelf-monitoring/app.py`.
+6. Choose an available app subdomain.
 7. Click **"Deploy"**.
 
 ---
